@@ -31,7 +31,7 @@ type WsBookTickerEvent struct {
 }
 
 // WsBookTickerHandler handle websocket partial depth event
-type WsBookTickerHandler func(event WsBookTickerEvent)
+type WsBookTickerHandler func(event *WsBookTickerEvent)
 
 // WsBookTickerServe serve websocket partial depth handler with a symbol
 func WsBookTickerServe(symbol string, handler WsBookTickerHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
@@ -39,8 +39,8 @@ func WsBookTickerServe(symbol string, handler WsBookTickerHandler, errHandler Er
 
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
-		var event WsBookTickerEvent
-		err := json.Unmarshal(message, &event)
+		event := new(WsBookTickerEvent)
+		err := json.Unmarshal(message, event)
 		if err != nil {
 			errHandler(err)
 			return

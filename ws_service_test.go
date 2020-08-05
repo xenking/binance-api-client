@@ -71,8 +71,8 @@ func (s *websocketServiceTestSuite) TestBookTickerServe() {
 	s.mockWsServe(data, errors.New(fakeErrMsg))
 	defer s.assertWsServe()
 
-	doneC, stopC, err := WsBookTickerServe("ETHBTC", func(event WsBookTickerEvent) {
-		e := WsBookTickerEvent{
+	doneC, stopC, err := WsBookTickerServe("ETHBTC", func(event *WsBookTickerEvent) {
+		e := &WsBookTickerEvent{
 			UpdateID:    400900217,
 			Symbol:      "BNBUSDT",
 			BidPrice:    "25.35190000",
@@ -91,7 +91,7 @@ func (s *websocketServiceTestSuite) TestBookTickerServe() {
 	<-doneC
 }
 
-func (s *websocketServiceTestSuite) assertWsBookTickerEventEqual(e, a WsBookTickerEvent) {
+func (s *websocketServiceTestSuite) assertWsBookTickerEventEqual(e, a *WsBookTickerEvent) {
 	r := s.r()
 	r.Equal(e.UpdateID, a.UpdateID, "UpdateID")
 	r.Equal(e.Symbol, a.Symbol, "Symbol")
