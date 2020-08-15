@@ -58,13 +58,13 @@ const (
 	OrderStatusTypeRejected        OrderStatusType = "REJECTED"
 	OrderStatusTypeExpired         OrderStatusType = "EXPIRED"
 
-	OCOStatusTypeResponce    = "RESPONSE"
-	OCOStatusTypeExecStarted = "EXEC_STARTED"
-	OCOStatusTypeAllDone     = "ALL_DONE"
+	OCOListStatusTypeResponce    OCOListStatusType = "RESPONSE"
+	OCOListStatusTypeExecStarted OCOListStatusType = "EXEC_STARTED"
+	OCOListStatusTypeAllDone     OCOListStatusType = "ALL_DONE"
 
-	OCOOrderStatusTypeExecuting = "EXECUTING"
-	OCOOrderStatusTypeAllDone   = "ALL_DONE"
-	OCOOrderStatusTypeReject    = "REJECT"
+	OCOListOrderStatusTypeExecuting OCOListOrderStatusType = "EXECUTING"
+	OCOListOrderStatusTypeAllDone   OCOListOrderStatusType = "ALL_DONE"
+	OCOListOrderStatusTypeReject    OCOListOrderStatusType = "REJECT"
 
 	TimeInForceTypeGTC TimeInForceType = "GTC"
 	TimeInForceTypeIOC TimeInForceType = "IOC"
@@ -80,7 +80,6 @@ const (
 )
 
 var json = jsoniter.ConfigFastest
-
 
 func currentTimestamp() int64 {
 	return FormatTimestamp(time.Now())
