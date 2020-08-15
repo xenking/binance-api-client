@@ -1,11 +1,10 @@
 package binance
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
-
-	jsoniter "github.com/json-iterator/go"
 )
 
 var (
@@ -16,9 +15,7 @@ var (
 	WebsocketTimeout = time.Second * 60
 	// WebsocketKeepalive enables sending ping/pong messages to check the connection stability
 	WebsocketKeepalive = false
-
-	json = jsoniter.ConfigFastest
-)
+	)
 
 // WsBookTickerEvent define websocket individual book ticker event
 type WsBookTickerEvent struct {

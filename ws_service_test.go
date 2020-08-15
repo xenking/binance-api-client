@@ -4,13 +4,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
-
 type websocketServiceTestSuite struct {
-	suite.Suite
+	baseTestSuite
 	origWsServe func(*WsConfig, WsHandler, ErrHandler) (chan struct{}, chan struct{}, error)
 	serveCount  int
 }
@@ -18,11 +16,6 @@ type websocketServiceTestSuite struct {
 func TestWebsocketService(t *testing.T) {
 	suite.Run(t, new(websocketServiceTestSuite))
 }
-
-func (s *websocketServiceTestSuite) r() *require.Assertions {
-	return s.Require()
-}
-
 
 func (s *websocketServiceTestSuite) SetupTest() {
 	s.origWsServe = wsServe
