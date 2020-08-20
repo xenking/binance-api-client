@@ -3,7 +3,7 @@ package binance
 import (
 	"time"
 
-	"github.com/dgrr/fastws"
+	"github.com/gorilla/websocket"
 )
 
 // WsHandler handle raw websocket message
@@ -24,9 +24,7 @@ func newWsConfig(endpoint string) *WsConfig {
 }
 
 var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-
-	c, err := fastws.Dial(cfg.Endpoint)
-
+	c, _, err := websocket.DefaultDialer.Dial(cfg.Endpoint, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -43,33 +41,38 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		if WebsocketKeepalive {
 			keepAlive(c, WebsocketTimeout)
 		}
-		var msg []byte
+
 		for {
 			select {
 			case <-stopC:
 				return
 			default:
-				_, msg, err = c.ReadMessage(msg[:0])
+				_, message, err := c.ReadMessage()
 				if err != nil {
 					errHandler(err)
 					return
 				}
-				handler(msg)
+				handler(message)
 			}
 		}
 	}()
 	return
 }
 
-func keepAlive(c *fastws.Conn, timeout time.Duration) {
+func keepAlive(c *websocket.Conn, timeout time.Duration) {
 	ticker := time.NewTicker(timeout)
 
 	lastResponse := time.Now()
+	c.SetPongHandler(func(msg string) error {
+		lastResponse = time.Now()
+		return nil
+	})
 
 	go func() {
 		defer ticker.Stop()
 		for {
-			err := c.SendCode(fastws.CodePing, fastws.StatusNone, []byte{})
+			deadline := time.Now().Add(10 * time.Second)
+			err := c.WriteControl(websocket.PingMessage, []byte{}, deadline)
 			if err != nil {
 				return
 			}
